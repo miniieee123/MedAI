@@ -1,0 +1,42 @@
+from fastapi import FastAPI # importing the fast api from the FastAPI framework
+from fastapi.middleware.cors import CORSMiddleware # sits between  te request and response CORS ->cross-origin Resource sharing
+from app.routes import interactions, agent, hcps # interactions.py -> CRUD for interaction , , agent AI -> ai chat endpoints, HCPS.py -> HCP Management
+from app.db.database import create_tables # when backend starts database tables may not exist, this function ensure  the tables are created automatically "create a table if not existing"
+from dotenv import load_dotenv
+import os
+load_dotenv()
+app = FastAPI(title="AI-First CRM HCP Module", version="1.0.0") #Matedata , title-> this changes the API Documentation title, for visual understanding 
+
+
+app.add_middleware( # now every request now passes through: CORSMiddleware before reaching routes
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000", "http://localhost:5173"],#only these frontend apps can call backend.
+    allow_credentials=True, # Allows cookies, authentication headers , sessions ->important  for production auth systems.
+    allow_methods=["*"], # allows all http methods (GET, POST, PUT, Delete ,Patch)
+    allow_headers=["*"], # Allow all request headers
+)
+
+@app.on_event("startup") #-> Event  Decorator , Run the function when Server start 
+async def startup(): #FastAPI starts -> startup() executes , -> create_tables() runs, -> DB tables ensured
+    create_tables()
+#async Def-> FastAPI supports asynchronous executions 
+
+# Route Registration 
+#Route-> Collection of related APIs  
+# example inside interactions.py (@router.post("/"), (@router.get("/")) attaching these APIs to main app)
+# so in the url , final EndPoint while become, -> /api/interactions/ , because prefix added
+# why prefix they organize APIs
+
+app.include_router(interactions.router, prefix="/api/interactions", tags=["interactions"])
+app.include_router(agent.router, prefix="/api/agent", tags=["agent"])
+app.include_router(hcps.router, prefix="/api/hcps", tags=["hcps"])
+
+
+
+#  Tell us about  backend server is  alive and working 
+@app.get("/health")
+def health():
+    return {"status": "ok", "message": "CRM HCP API running"}
+
+
+# Main.py -> routes -> agent.py/interactions.py/hcps.py/ -> database.py -> LLM agent

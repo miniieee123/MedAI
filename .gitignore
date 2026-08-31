@@ -1,0 +1,50 @@
+#frontend 
+frontend/node_modules/
+frontend/build/
+frontend/.env
+frontend/.DS_Store
+
+#backend 
+backend/__pycache__/
+backend/**/*.pyc
+backend/.env
+backend/.venv/
+backend/venv/
+backend/.pytest_cache/
+
+# DATABASE
+*.db
+*.sqlite3
+
+#.venv
+.venv/
+venv/
+
+#cache FILE 
+__pycache__/
+*.py[cod]
+*$py.class
+
+# OS FILES
+.DS_Store
+Thumbs.db
+
+# LOG FILES
+*.log
+
+# ENV FILES
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# REACT CACHE
+
+frontend/.cache/
+frontend/.eslintcache
+
+
+# PYTHON CACHE
+.pytest_cache/
+.mypy_cache/
